@@ -104,3 +104,11 @@ Após a instalação/configuração dos [pŕe-requisitos](#pré-requisitos), bas
     ```
 
 1. remover o arquivo [`./.test.push.txt`](./.test.push.txt) e enviar a alteração (`commit & push`) para garantir que as permissões estão devidamente configuradas no repositório.
+
+
+Pontos:
+1. Documentar as APIs ( listagem de pedidos, detalhamento de pedido)
+2. Carregar um arquivo de massa do S3 para os pedidos
+3. No carregamento dos pedidos, filtrar por customerId
+4. Criar os testes unitarios ( listagem de pedidos, detalhamento de pedido por customerId)
+5. Criar os pontos de entrada na lambda e configurar os endpoints no API Gateway

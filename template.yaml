@@ -88,13 +88,13 @@ Resources:
       BucketName: !Sub '${StackName}-${StackEnvironment}-orders'
 
   #APIs (lambda)
-  GeneralFunction128:
+  GetOrderByUserId:
     Type: AWS::Serverless::Function
     Properties:
       Description: |
         [X] Processa chamadas das APIs do recurso X
       CodeUri: lambda/dist
-      Handler: index.handleRestAPI
+      Handler: index.GetOrderByUserId
       Architectures:
         - x86_64
       Layers:
@@ -104,25 +104,65 @@ Resources:
           APPLICATION_NAME: !Ref ApplicationName
           STACK_ENVIRONMENT: !Ref StackEnvironment
       Events:
-        GetDummyFunctionEvent128:
+        GetOrderByUserIdEvent:
           Type: Api
           Properties:
             RestApiId: !Ref DeveloperTestApiGatewayApi
-            Path: /v1/dummy
+            Path: /v1/orders/{orderId}
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
       Tags:
         "orders:application:name": !Sub '${ApplicationName}-${StackName}-${StackEnvironment}'
-        "orders:application:resource": !Sub '${ApplicationName}-${StackName}-${StackEnvironment}-GeneralFunction128'
-  GeneralFunction128LogGroup:
+        "orders:application:resource": !Sub '${ApplicationName}-${StackName}-${StackEnvironment}-GetOrderByUserId'
+  GetOrderByUserIdLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '/aws/lambda/${GeneralFunction128}'
+      LogGroupName: !Sub '/aws/lambda/${GetOrderByUserId}'
       RetentionInDays: 1
       Tags:
         - Key: "orders:application:name"
           Value: !Sub '${ApplicationName}-${StackName}-${StackEnvironment}'
         - Key: "orders:application:resource"
-          Value: !Sub '${ApplicationName}-${StackName}-${StackEnvironment}-GeneralFunction128LogGroup'
+          Value: !Sub '${ApplicationName}-${StackName}-${StackEnvironment}-GetOrderByUserIdLogGroup'
+
+  GetOrderById:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: |
+        [X] Processa chamadas das APIs do recurso X
+      CodeUri: lambda/dist
+      Handler: index.GetOrderById
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref DeveloperTestLayerV1
+      Environment:
+        Variables:
+          APPLICATION_NAME: !Ref ApplicationName
+          STACK_ENVIRONMENT: !Ref StackEnvironment
+      Events:
+        GetOrderByIdEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DeveloperTestApiGatewayApi
+            Path: /v1/orders/{orderId}
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+      Tags:
+        "orders:application:name": !Sub '${ApplicationName}-${StackName}-${StackEnvironment}'
+        "orders:application:resource": !Sub '${ApplicationName}-${StackName}-${StackEnvironment}-GetOrderById'
+  GetOrderByIdLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${GetOrderById}'
+      RetentionInDays: 1
+      Tags:
+        - Key: "orders:application:name"
+          Value: !Sub '${ApplicationName}-${StackName}-${StackEnvironment}'
+        - Key: "orders:application:resource"
+          Value: !Sub '${ApplicationName}-${StackName}-${StackEnvironment}-GetOrderByIdLogGroup'
 
   #Lambda Layer
   DeveloperTestLayerV1:
